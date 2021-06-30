@@ -30,6 +30,7 @@ def scrape_all():
     return(my_data)
 
 
+
 # # Mars News Site
 def scrape_articles(browser, bs):
     # Open the website in browser using splinter and webdriver
