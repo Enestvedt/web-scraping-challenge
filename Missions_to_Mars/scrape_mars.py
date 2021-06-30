@@ -10,10 +10,24 @@ def scrape_all():
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=False) #if headless True will execute but not open browser
 
-    return(scrape_articles(browser, bs), scrape_image(browser, bs), scrape_facts(), scrape_hems(browser, bs))
+
+    article = scrape_articles(browser, bs)
+    featured = scrape_image(browser, bs)
+    table = scrape_facts()
+    hems = scrape_hems(browser, bs)
+
+    my_data = {
+        'title': article['title'], 
+        'text': article['text'],
+        'featured_img': featured,
+        'facts': table,
+        'hems': hems
+        }
     
     #quit the browser
     browser.quit()
+
+    return(my_data)
 
 
 # # Mars News Site
@@ -28,12 +42,12 @@ def scrape_articles(browser, bs):
 
     articles = soup.find_all('div', class_='list_text')
 
+    
     #set variables for title and news_p for the first news item
     news_title = articles[0].find("div", class_="content_title").text
     news_p = articles[0].find("div", class_="article_teaser_body").text
-
-    return(news_title, news_p)
-
+    news = {'title': news_title, 'text': news_p}
+    return(news)
 
 # # JPL Mars Space Images - Featured Image
 def scrape_image(browser, bs):
@@ -76,8 +90,7 @@ def scrape_facts():
     # strip new lines from table - clean-up the html
     html_table = html_table.replace('\n', '')
 
-    # save table to file.html and open it (Mac only)
-    df.to_html('table.html')
+    return(html_table)
 
 
 
@@ -111,8 +124,6 @@ def scrape_hems(browser, bs):
         dict = {"title": title, "img_url": my_link}
         hemisphere_image_urls.append(dict)
         
-        return(hemisphere_image_urls)
-        print(hemisphere_image_urls)
-
+    return(hemisphere_image_urls)
 
 scrape_all()
