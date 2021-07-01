@@ -8,7 +8,7 @@ def scrape_all():
 
     # Setup splinter
     executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False) #if headless True will execute but not open browser
+    browser = Browser('chrome', **executable_path, headless=True) #if headless True will execute but not open browser
 
 
     article = scrape_articles(browser, bs)
@@ -76,7 +76,7 @@ def scrape_facts():
     df = tables[1]
 
     #rename the columns so they make sense in html table
-    df.columns = ['Mars_Profile', 'Mars_Data']
+    df.columns = ['Mars Profile', 'Mars Data']
 
     #remove index colunn
     df = df.set_index(df.columns[0])
@@ -88,8 +88,10 @@ def scrape_facts():
     # Generate and HTML Table from a dataframe 
     html_table = df.to_html()
 
-    # strip new lines from table - clean-up the html
+    # strip new lines from table - clean-up the html add bootstrap classes
     html_table = html_table.replace('\n', '')
+    html_table = html_table.replace('<table border="1" class="dataframe">', '<table border="1" class="table table-striped">') 
+    html_table = html_table.replace('<thead>', '<thead class="thead-dark">')
 
     return(html_table)
 
